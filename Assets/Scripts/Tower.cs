@@ -53,7 +53,7 @@ public class Tower : MonoBehaviour {
 			float rotz = Mathf.Atan2 (diff.y, diff.z) * Mathf.Rad2Deg;
 			childTransform.rotation = Quaternion.Euler (0f, 0f, rotz);
 
-			t1 -= Time.deltaTime; 
+			t1 -= Time.deltaTime;
 			if (t1 <= 0f) {
 				Shoot ();
 				t2 -= Time.deltaTime;
@@ -79,41 +79,55 @@ public class Tower : MonoBehaviour {
 		GameObject currentPotentialTarget = null;
 
 		switch (targetingMode) {
-		case TargetingMode.Closest:
-		default:
-			foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
-				if (c.tag == "Enemy") {
-					float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
-					if (tmpDist < maxDist) {
-						maxDist = tmpDist;
-						currentPotentialTarget = c.gameObject;
+			case TargetingMode.Closest:
+			default:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
+						if (tmpDist < maxDist) {
+							maxDist = tmpDist;
+							currentPotentialTarget = c.gameObject;
+						}
 					}
 				}
-			}
+				break;
 
-			break;
-		case TargetingMode.Furthest:
-			foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
-				if (c.tag == "Enemy") {
-					float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
-					if (tmpDist > minDist) {
-						minDist = tmpDist;
-						currentPotentialTarget = c.gameObject;
+			case TargetingMode.Furthest:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
+						if (tmpDist > minDist) {
+							minDist = tmpDist;
+							currentPotentialTarget = c.gameObject;
+						}
 					}
 				}
-			}
-			break;
-		case TargetingMode.MostDamaged:
-			foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
-				if (c.tag == "Enemy") {
-					float tmpLife = c.GetComponent<Enemy> ().life;
-					if (tmpLife > minDist) {
-						minDist = tmpLife;
-						currentPotentialTarget = c.gameObject;
+				break;
+
+			case TargetingMode.LeastDamaged:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						float tmpLife = c.GetComponent<Enemy> ().life;
+						if (tmpLife < maxDist) {
+							minDist = tmpLife;
+							currentPotentialTarget = c.gameObject;
+						}
 					}
 				}
-			}
-			break;
+				break;
+
+			case TargetingMode.MostDamaged:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						float tmpLife = c.GetComponent<Enemy> ().life;
+						if (tmpLife > minDist) {
+							minDist = tmpLife;
+							currentPotentialTarget = c.gameObject;
+						}
+					}
+				}
+				break;
+
 		}
 
 		if (currentPotentialTarget == null) {

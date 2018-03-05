@@ -8,10 +8,12 @@ public class Bullet : MonoBehaviour {
 	public GameObject currentTarget;
 	public Vector3 targetDirection = Vector3.zero;
 	public GameObject explosionParticle;
+	private ParticleSystem.MainModule explosionParticleMain;
 	public float lifeSpan = 10f;
 
 	void Start () {
-		explosionParticle.GetComponent<ParticleSystem> ().startColor = GetComponent<Renderer> ().material.color;
+		explosionParticleMain = explosionParticle.GetComponent<ParticleSystem> ().main;
+		explosionParticleMain.startColor = GetComponent<Renderer> ().material.color;
 	}
 
 	public void SetTarget (GameObject newTarget) {
@@ -19,7 +21,7 @@ public class Bullet : MonoBehaviour {
 		targetDirection = currentTarget.transform.position - transform.position;
 		targetDirection.Normalize ();
 	}
-		
+
 	void Update () {
 		transform.Translate (targetDirection * Time.deltaTime * 4f);
 		lifeSpan -= Time.deltaTime;

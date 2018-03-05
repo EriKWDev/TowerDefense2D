@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof (LineRenderer))]
+[RequireComponent (typeof (LineRenderer))]
 public class Map : MonoBehaviour {
 
 	public LineRenderer lineRenderer;
@@ -13,9 +13,9 @@ public class Map : MonoBehaviour {
 		lineRenderer = GetComponent<LineRenderer> ();
 		UpdateMapBasedOnChildren ();
 	}
-		
+
 	void Update () {
-		
+
 	}
 
 	public void UpdateMapBasedOnChildren () {
@@ -32,7 +32,7 @@ public class Map : MonoBehaviour {
 			i++;
 		}
 
-		lineRenderer.SetVertexCount (vectorMap.Count);
+		lineRenderer.positionCount = vectorMap.Count;
 		lineRenderer.SetPositions (vectorMap.ToArray ());
 	}
 

@@ -130,4 +130,4 @@ MonoBehaviour:
   nextMapPoint: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 0}
   life: 6
-  speed: 100
+  speed: 56.2

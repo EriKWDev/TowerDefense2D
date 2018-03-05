@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour {
 			mapReference = GameObject.Find ("Map").GetComponent<Map> ();
 		}
 
-		firstMapPoint = mapReference.map [0];
-		lastMapPoint = mapReference.map [mapReference.map.Count - 1];
+		firstMapPoint = mapReference.map[0];
+		lastMapPoint = mapReference.map[mapReference.map.Count - 1];
 
 		livesText = GameObject.Instantiate (livesPrefab, lastMapPoint.transform);
 		StartCoroutine (SpawnWave ());
@@ -43,16 +43,16 @@ public class GameManager : MonoBehaviour {
 			t = time;
 			StartCoroutine (SpawnWave ());
 		}
- 	}
+	}
 
 	public IEnumerator SpawnWave () {
 		int cw = currentWave;
 		if (currentWave < enemyWaves.waves.Count) {
-			foreach (EnemyType enemyType in enemyWaves.waves [cw].enemies) {
+			foreach (EnemyType enemyType in enemyWaves.waves[cw].enemies) {
 				for (int i = 0; i < enemyType.amount; i++) {
 					GameObject enemy = Instantiate (FindEnemyObjectOfType (enemyType.enemyType), this.transform);
-					enemy.transform.position = new Vector3 (enemy.transform.position.x, enemy.transform.position.y, 0f);
-					yield return new WaitForSeconds (enemyWaves.waves [cw].spawnRate);
+					enemy.transform.position = new Vector3 (firstMapPoint.transform.position.x, firstMapPoint.transform.position.y, 0f);
+					yield return new WaitForSeconds (enemyWaves.waves[cw].spawnRate);
 				}
 			}
 
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		Debug.LogError ("Could not find Enemy of type : " + enemyType.ToString () + ". Will spawn default enemy instead.");
-		return enemies [0].enemy;
+		return enemies[0].enemy;
 	}
 
 	public void EnemyReachedEnd () {

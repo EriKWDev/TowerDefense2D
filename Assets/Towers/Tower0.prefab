@@ -184,12 +184,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   targetingMode: 0
-  range: 10
+  range: 4
   price: 0
   currentTarget: {fileID: 0}
   hasTarget: 0
   bulletPrefab: {fileID: 1538009787970738, guid: 9c8bd7c31d0cce648ac5220080e05eb8,
     type: 2}
-  delayBetweenShots: 0.5
+  delayBetweenShots: 0.4
   shootDuration: 0.01
+  damagePerBullet: 4
   childTransform: {fileID: 4736693693375578}

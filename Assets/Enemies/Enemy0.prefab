@@ -129,5 +129,5 @@ MonoBehaviour:
   currentMapPointIndex: 0
   nextMapPoint: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 0}
-  life: 20
-  speed: 32.7
+  life: 8
+  speed: 20.4

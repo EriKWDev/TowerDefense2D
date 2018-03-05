@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour {
 	public GameObject currentTarget;
 	public Vector3 targetDirection = Vector3.zero;
 	public GameObject explosionParticle;
+	public float bulletSpeed = 4f;
 	private ParticleSystem.MainModule explosionParticleMain;
 	public float lifeSpan = 10f;
 
@@ -23,10 +24,17 @@ public class Bullet : MonoBehaviour {
 	}
 
 	void Update () {
-		transform.Translate (targetDirection * Time.deltaTime * 4f);
+		if (targetDirection == Vector3.zero) {
+			if (currentTarget == null) {
+				Die ();
+			}
+			SetTarget (currentTarget);
+		}
+
+		transform.Translate (targetDirection * Time.deltaTime * bulletSpeed);
 		lifeSpan -= Time.deltaTime;
 		if (lifeSpan <= 0f) {
-			GameObject.Destroy (this.gameObject);
+			Die ();
 		}
 	}
 

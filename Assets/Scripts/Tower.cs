@@ -23,14 +23,17 @@ public class Tower : MonoBehaviour {
 	public GameObject bulletPrefab;
 
 	public float delayBetweenShots = 0.5f;
+	public float canonTurnSpeed = 20f;
 	public float shootDuration = 0.01f;
 	public float damagePerBullet = 2f;
 	float t1 = 0f;
 	float t2 = 0f;
+	Color gizmosColor;
 
 	public Transform childTransform;
 
 	void Start () {
+		gizmosColor = GetComponent<Renderer> ().sharedMaterial.color;
 		t1 = delayBetweenShots;
 		t2 = shootDuration;
 	}
@@ -40,7 +43,7 @@ public class Tower : MonoBehaviour {
 	}
 
 	public void OnDrawGizmos () {
-		Gizmos.color = Color.blue;
+		Gizmos.color = new Color (gizmosColor.r, gizmosColor.g, gizmosColor.b, 0.2f);
 		Gizmos.DrawWireSphere (transform.position, range);
 		if (hasTarget && currentTarget != null)
 			Gizmos.DrawWireSphere (currentTarget.transform.position, 0.5f);
@@ -49,9 +52,7 @@ public class Tower : MonoBehaviour {
 	public void ShootMechanics () {
 		Aim ();
 		if (hasTarget) {
-			Vector3 diff = (currentTarget.transform.position - childTransform.position).normalized;
-			float rotz = Mathf.Atan2 (diff.y, diff.z) * Mathf.Rad2Deg;
-			childTransform.rotation = Quaternion.Euler (0f, 0f, rotz);
+			childTransform.up = Vector3.Lerp (childTransform.up, currentTarget.transform.position - childTransform.position, Time.deltaTime * canonTurnSpeed);
 
 			t1 -= Time.deltaTime;
 			if (t1 <= 0f) {
@@ -67,10 +68,13 @@ public class Tower : MonoBehaviour {
 	}
 
 	public void Shoot () {
+		// if (!Application.isEditor) {
 		GameObject bullet = GameObject.Instantiate (bulletPrefab);
 		bullet.transform.position = transform.position;
 		bullet.GetComponent<Bullet> ().tower = this.gameObject;
-		bullet.GetComponent<Bullet> ().SetTarget (currentTarget);
+		//bullet.GetComponent<Bullet> ().SetTarget (currentTarget);
+		bullet.GetComponent<Bullet> ().targetDirection = childTransform.up;
+		// }
 	}
 
 	public void Aim () {

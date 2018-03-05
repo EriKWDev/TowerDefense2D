@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour {
 	public void GetNextMapPoint () {
 		if (currentMapPointIndex < GameManager.instance.mapReference.map.Count) {
 			nextMapPoint = GameManager.instance.mapReference.vectorMap[currentMapPointIndex];
-			direction = (nextMapPoint - transform.position);
+			direction = (nextMapPoint - transform.position).normalized * 5f;
 
 			xIsHigher = nextMapPoint.x > transform.position.x;
 			yIsHigher = nextMapPoint.y > transform.position.y;

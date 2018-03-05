@@ -58,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 66e08fdbbc337bf44a3bf503aa1822a9, type: 2}
+  - {fileID: 2100000, guid: 5e61fcee4e54105489e96459b8052ac8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,7 +84,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1538009787970738}
-  m_Mesh: {fileID: 4300000, guid: 351fd3db8f2421a41b97958b739e2449, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 81af0c3151216f24d80920572f41425a, type: 3}
 --- !u!50 &50416541511400262
 Rigidbody2D:
   serializedVersion: 4
@@ -136,4 +136,5 @@ MonoBehaviour:
   targetDirection: {x: -0.6975181, y: -0.6797953, z: 0.22659844}
   explosionParticle: {fileID: 1925557243662636, guid: d88bc1542d4f4b24aba7171c01e21731,
     type: 2}
+  bulletSpeed: 5
   lifeSpan: 10

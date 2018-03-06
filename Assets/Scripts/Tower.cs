@@ -28,14 +28,19 @@ public class Tower : MonoBehaviour {
 	public float damagePerBullet = 2f;
 	float t1 = 0f;
 	float t2 = 0f;
+	[HideInInspector]
+	public GameObject bullet;
 	Color gizmosColor;
 
 	public Transform childTransform;
 
-	void Start () {
+	public virtual void Start () {
 		gizmosColor = GetComponent<Renderer> ().sharedMaterial.color;
 		t1 = delayBetweenShots;
 		t2 = shootDuration;
+		if (childTransform == null) {
+			childTransform = gameObject.GetComponentInChildren<Transform> ();
+		}
 	}
 
 	void Update () {
@@ -61,20 +66,26 @@ public class Tower : MonoBehaviour {
 				if (t2 <= 0f) {
 					t1 = delayBetweenShots;
 					t2 = shootDuration;
+					StopShooting ();
 				}
-
 			}
+		} else {
+			t1 = delayBetweenShots;
+			t2 = shootDuration;
+			StopShooting ();
 		}
 	}
 
-	public void Shoot () {
-		// if (!Application.isEditor) {
-		GameObject bullet = GameObject.Instantiate (bulletPrefab);
+	public virtual void StopShooting () {
+		
+	}
+
+	public virtual void Shoot () {
+		bullet = GameObject.Instantiate (bulletPrefab);
 		bullet.transform.position = transform.position;
 		bullet.GetComponent<Bullet> ().tower = this.gameObject;
 		//bullet.GetComponent<Bullet> ().SetTarget (currentTarget);
 		bullet.GetComponent<Bullet> ().targetDirection = childTransform.up;
-		// }
 	}
 
 	public void Aim () {

@@ -130,7 +130,10 @@ MonoBehaviour:
   nextMapPoint: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 0}
   life: 6
-  speed: 43.9
+  speed: 76.5
   deathParticlePrefab: {fileID: 1250581631971252, guid: 68dc69fd1ae30b74788ec7396537ef96,
     type: 2}
   realSpeed: 0
+  arbitraryDistanceTravelled: 0
+  xIsHigher: 0
+  yIsHigher: 0

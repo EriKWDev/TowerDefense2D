@@ -14,8 +14,11 @@ public class Enemy : MonoBehaviour {
 	public GameObject deathParticlePrefab;
 	[HideInInspector]
 	public float realSpeed;
+	//[HideInInspector]
+	public float arbitraryDistanceTravelled = 0f;
 
-	private bool xIsHigher, yIsHigher = false;
+	public bool xIsHigher, yIsHigher = false;
+	Vector3 lastPosition;
 
 	public enum EnemyTypes {
 		Zero,
@@ -26,13 +29,16 @@ public class Enemy : MonoBehaviour {
 	void Start () {
 		realSpeed = speed;
 		transform.position = GameManager.instance.mapReference.vectorMap[currentMapPointIndex];
+		lastPosition = transform.position;
 		GetNextMapPoint ();
 	}
 
 	void Update () {
+		arbitraryDistanceTravelled += Vector3.Distance(lastPosition, transform.position);
+		lastPosition = transform.position;
 		transform.Translate (direction * (speed / 100f) * Time.deltaTime);
 
-		if (xIsHigher == (nextMapPoint.x < transform.position.x) && yIsHigher == (nextMapPoint.y < transform.position.y)) {
+		if ((xIsHigher == (nextMapPoint.x < transform.position.x)) && (yIsHigher == (nextMapPoint.y < transform.position.y))) {
 			GetNextMapPoint ();
 		}
 	}
@@ -47,10 +53,9 @@ public class Enemy : MonoBehaviour {
 
 	int timesDelayed = 0;
 
-	public IEnumerator SlowDown (float amount, float delay) {
+	public IEnumerator SlowDown (float amount, float delay, float minSpeed) {
 		timesDelayed++;
 		float t = delay;
-		float minSpeed = 0.3f;
 		speed = (speed - amount > minSpeed ? speed - amount : minSpeed);
 		while (t > 0f) {
 			yield return new WaitForEndOfFrame ();
@@ -78,11 +83,16 @@ public class Enemy : MonoBehaviour {
 
 	public void GetNextMapPoint () {
 		if (currentMapPointIndex < GameManager.instance.mapReference.map.Count) {
+			Vector3 tmpLastPoint = nextMapPoint;
+
+			if (currentMapPointIndex > 0)
+				transform.position = tmpLastPoint;
+
 			nextMapPoint = GameManager.instance.mapReference.vectorMap[currentMapPointIndex];
 			direction = (nextMapPoint - transform.position).normalized * 5f;
 
-			xIsHigher = nextMapPoint.x > transform.position.x;
-			yIsHigher = nextMapPoint.y > transform.position.y;
+			xIsHigher = (nextMapPoint.x > tmpLastPoint.x);
+			yIsHigher = (nextMapPoint.y > tmpLastPoint.y);
 
 			currentMapPointIndex++;
 		} else {

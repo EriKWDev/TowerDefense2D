@@ -16,9 +16,9 @@ MonoBehaviour:
   waves:
   - enemies:
     - enemyType: 0
-      amount: 20
+      amount: 74
       enemy: {fileID: 0}
     - enemyType: 2
-      amount: 63
+      amount: 35
       enemy: {fileID: 0}
-    spawnRate: 0.56
+    spawnRate: 0.35

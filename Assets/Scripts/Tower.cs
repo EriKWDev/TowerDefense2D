@@ -8,9 +8,11 @@ public class Tower : MonoBehaviour {
 	public enum TargetingMode {
 		Closest,
 		Furthest,
-		MostDamaged,
 		LeastDamaged,
-		smartCLosest,
+		MostDamaged,
+		LeastDistanceTravelled,
+		FurthestDistanceTravelled,
+		SmartClosest,
 		SingleTarget,
 		Random
 	}
@@ -18,6 +20,7 @@ public class Tower : MonoBehaviour {
 	public TargetingMode targetingMode = TargetingMode.Closest;
 	public float range = 12f;
 	public int price;
+	public bool selected = false;
 
 	public GameObject currentTarget;
 	public bool hasTarget = false;
@@ -35,9 +38,14 @@ public class Tower : MonoBehaviour {
 	Color gizmosColor;
 
 	public Transform childTransform;
+	Vector3 smoothDampVector;
 
 	public virtual void Start () {
+		LineDrawer = GetComponent<LineRenderer> ();
+		LineDrawer.material.color = GetComponent<Renderer> ().sharedMaterial.color;
 		gizmosColor = GetComponent<Renderer> ().sharedMaterial.color;
+		LineDrawer.startWidth = thickness;
+		LineDrawer.endWidth = thickness;
 		t1 = delayBetweenShots;
 		t2 = shootDuration;
 		if (childTransform == null) {
@@ -45,12 +53,41 @@ public class Tower : MonoBehaviour {
 		}
 	}
 
+	private bool drawOnce = false;
+
 	void Update () {
 		ShootMechanics ();
+		if (selected) {
+			if (!drawOnce) {
+				DrawRangeCircle ();
+				drawOnce = true;
+			}
+		} else {
+			LineDrawer.positionCount = 0;
+			drawOnce = false;
+		}
+	}
+
+	private float ThetaScale = 0.01f;
+	private int Size;
+	private LineRenderer LineDrawer;
+	private float Theta = 0f;
+	private float thickness = 0.02f;
+
+	public void DrawRangeCircle () {
+		Theta = 0f;
+		Size = (int)((1f / ThetaScale) + 1f);
+		LineDrawer.positionCount = Size;
+		for (int i = 0; i < Size; i++) {
+			Theta += (2.0f * Mathf.PI * ThetaScale);
+			float x = range * Mathf.Cos (Theta);
+			float y = range * Mathf.Sin (Theta);
+			LineDrawer.SetPosition (i, new Vector3 (x, y, -1f));
+		}
 	}
 
 	public void OnDrawGizmos () {
-		Gizmos.color = new Color (gizmosColor.r, gizmosColor.g, gizmosColor.b, 0.2f);
+		Gizmos.color = new Color (gizmosColor.r, gizmosColor.g, gizmosColor.b, 0.05f);
 		Gizmos.DrawWireSphere (transform.position, range);
 		if (hasTarget && currentTarget != null)
 			Gizmos.DrawWireSphere (currentTarget.transform.position, 0.5f);
@@ -59,7 +96,7 @@ public class Tower : MonoBehaviour {
 	public void ShootMechanics () {
 		Aim ();
 		if (hasTarget) {
-			childTransform.up = Vector3.Lerp (childTransform.up, currentTarget.transform.position - childTransform.position, Time.deltaTime * canonTurnSpeed);
+			childTransform.up = Vector3.SmoothDamp (childTransform.up, currentTarget.transform.position - childTransform.position, ref smoothDampVector, Time.deltaTime * canonTurnSpeed);
 
 			t1 -= Time.deltaTime;
 			if (t1 <= 0f) {
@@ -72,8 +109,6 @@ public class Tower : MonoBehaviour {
 				}
 			}
 		} else {
-			// t1 = delayBetweenShots;
-			// t2 = shootDuration;
 			StopShooting ();
 		}
 	}
@@ -135,7 +170,7 @@ public class Tower : MonoBehaviour {
 						enemiesInRange++;
 						float tmpLife = c.GetComponent<Enemy> ().life;
 						if (tmpLife < maxValue) {
-							minValue = tmpLife;
+							maxValue = tmpLife;
 							currentPotentialTarget = c.gameObject;
 						}
 					}
@@ -149,6 +184,32 @@ public class Tower : MonoBehaviour {
 						float tmpLife = c.GetComponent<Enemy> ().life;
 						if (tmpLife > minValue) {
 							minValue = tmpLife;
+							currentPotentialTarget = c.gameObject;
+						}
+					}
+				}
+				break;
+
+			case TargetingMode.LeastDistanceTravelled:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						enemiesInRange++;
+						float tmpDist = c.GetComponent<Enemy> ().arbitraryDistanceTravelled;
+						if (tmpDist < maxValue) {
+							maxValue = tmpDist;
+							currentPotentialTarget = c.gameObject;
+						}
+					}
+				}
+				break;
+
+			case TargetingMode.FurthestDistanceTravelled:
+				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
+					if (c.tag == "Enemy") {
+						enemiesInRange++;
+						float tmpDist = c.GetComponent<Enemy> ().arbitraryDistanceTravelled;
+						if (tmpDist > minValue) {
+							minValue = tmpDist;
 							currentPotentialTarget = c.gameObject;
 						}
 					}

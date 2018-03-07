@@ -18,6 +18,8 @@ public class Tower1 : Tower {
 		foreach (RaycastHit2D hit in Physics2D.RaycastAll (childTransform.position, childTransform.up, 20f)) {
 			if (hit.collider.tag == "Enemy") {
 				hit.collider.GetComponent<Enemy> ().Damage (damagePerBullet);
+				GameObject p = GameObject.Instantiate (bulletParticlePrefab);
+				p.transform.position = hit.point;
 			}
 		}
 	}

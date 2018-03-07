@@ -10,6 +10,7 @@ public class Tower : MonoBehaviour {
 		Furthest,
 		MostDamaged,
 		LeastDamaged,
+		smartCLosest,
 		SingleTarget,
 		Random
 	}
@@ -26,6 +27,7 @@ public class Tower : MonoBehaviour {
 	public float canonTurnSpeed = 20f;
 	public float shootDuration = 0.01f;
 	public float damagePerBullet = 2f;
+	public GameObject bulletParticlePrefab;
 	float t1 = 0f;
 	float t2 = 0f;
 	[HideInInspector]
@@ -70,14 +72,14 @@ public class Tower : MonoBehaviour {
 				}
 			}
 		} else {
-			t1 = delayBetweenShots;
-			t2 = shootDuration;
+			// t1 = delayBetweenShots;
+			// t2 = shootDuration;
 			StopShooting ();
 		}
 	}
 
 	public virtual void StopShooting () {
-		
+
 	}
 
 	public virtual void Shoot () {
@@ -88,19 +90,26 @@ public class Tower : MonoBehaviour {
 		bullet.GetComponent<Bullet> ().targetDirection = childTransform.up;
 	}
 
+	int enemiesInRange = 0;
+	bool wasZero = false;
+
 	public void Aim () {
-		float maxDist = float.MaxValue;
-		float minDist = float.MinValue;
+		float maxValue = float.MaxValue;
+		float minValue = float.MinValue;
 		GameObject currentPotentialTarget = null;
+
+		wasZero = enemiesInRange == 0;
+		enemiesInRange = 0;
 
 		switch (targetingMode) {
 			case TargetingMode.Closest:
 			default:
 				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
 					if (c.tag == "Enemy") {
+						enemiesInRange++;
 						float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
-						if (tmpDist < maxDist) {
-							maxDist = tmpDist;
+						if (tmpDist < maxValue) {
+							maxValue = tmpDist;
 							currentPotentialTarget = c.gameObject;
 						}
 					}
@@ -110,9 +119,10 @@ public class Tower : MonoBehaviour {
 			case TargetingMode.Furthest:
 				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
 					if (c.tag == "Enemy") {
+						enemiesInRange++;
 						float tmpDist = (transform.position - c.transform.position).sqrMagnitude;
-						if (tmpDist > minDist) {
-							minDist = tmpDist;
+						if (tmpDist > minValue) {
+							minValue = tmpDist;
 							currentPotentialTarget = c.gameObject;
 						}
 					}
@@ -122,9 +132,10 @@ public class Tower : MonoBehaviour {
 			case TargetingMode.LeastDamaged:
 				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
 					if (c.tag == "Enemy") {
+						enemiesInRange++;
 						float tmpLife = c.GetComponent<Enemy> ().life;
-						if (tmpLife < maxDist) {
-							minDist = tmpLife;
+						if (tmpLife < maxValue) {
+							minValue = tmpLife;
 							currentPotentialTarget = c.gameObject;
 						}
 					}
@@ -134,9 +145,10 @@ public class Tower : MonoBehaviour {
 			case TargetingMode.MostDamaged:
 				foreach (Collider2D c in Physics2D.OverlapCircleAll (transform.position, range)) {
 					if (c.tag == "Enemy") {
+						enemiesInRange++;
 						float tmpLife = c.GetComponent<Enemy> ().life;
-						if (tmpLife > minDist) {
-							minDist = tmpLife;
+						if (tmpLife > minValue) {
+							minValue = tmpLife;
 							currentPotentialTarget = c.gameObject;
 						}
 					}
@@ -151,6 +163,9 @@ public class Tower : MonoBehaviour {
 		} else {
 			currentTarget = currentPotentialTarget;
 			hasTarget = true;
+			if (enemiesInRange > 0 && wasZero) {
+				t1 = 0f;
+			}
 		}
 	}
 }

@@ -71,13 +71,15 @@ public class GameManager : MonoBehaviour {
 		return enemies[0].enemy;
 	}
 
-	public void EnemyReachedEnd () {
+	public void EnemyReachedEnd (Color color) {
 		if (lives > 0) {
 			lives -= 1;
 		}
 
 		livesText.GetComponent<TextMeshPro> ().text = "" + lives;
 
+		ParticleSystem.MainModule explosionParticleMain = endParticles.GetComponent<ParticleSystem> ().main;
+		explosionParticleMain.startColor = color;
 		GameObject.Instantiate (endParticles, lastMapPoint.transform);
 	}
 }

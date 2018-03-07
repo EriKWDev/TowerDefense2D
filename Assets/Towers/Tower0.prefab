@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 33352605107224100}
   - component: {fileID: 23819349308729278}
   - component: {fileID: 58911342119272566}
-  - component: {fileID: 114814436850449670}
+  - component: {fileID: 114907586777502074}
   m_Layer: 0
   m_Name: Tower0
   m_TagString: Untagged
@@ -171,7 +171,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.0035
---- !u!114 &114814436850449670
+--- !u!114 &114907586777502074
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -184,15 +184,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   targetingMode: 0
-  range: 4
+  range: 2.3
   price: 0
   currentTarget: {fileID: 0}
   hasTarget: 0
   bulletPrefab: {fileID: 1538009787970738, guid: 9c8bd7c31d0cce648ac5220080e05eb8,
     type: 2}
-  delayBetweenShots: 0.6
+  delayBetweenShots: 1
   canonTurnSpeed: 20
   shootDuration: 0.01
   damagePerBullet: 4
+  bulletParticlePrefab: {fileID: 1925557243662636, guid: d88bc1542d4f4b24aba7171c01e21731,
+    type: 2}
   bullet: {fileID: 0}
   childTransform: {fileID: 4736693693375578}

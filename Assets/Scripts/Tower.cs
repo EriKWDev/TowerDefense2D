@@ -42,7 +42,7 @@ public class Tower : MonoBehaviour {
 
 	public virtual void Start () {
 		LineDrawer = GetComponent<LineRenderer> ();
-		LineDrawer.material.color = GetComponent<Renderer> ().sharedMaterial.color;
+		LineDrawer.material.color = GetComponent<Renderer> ().material.color;
 		gizmosColor = GetComponent<Renderer> ().sharedMaterial.color;
 		LineDrawer.startWidth = thickness;
 		LineDrawer.endWidth = thickness;
@@ -72,7 +72,7 @@ public class Tower : MonoBehaviour {
 	private int Size;
 	private LineRenderer LineDrawer;
 	private float Theta = 0f;
-	private float thickness = 0.02f;
+	private float thickness = 0.05f;
 
 	public void DrawRangeCircle () {
 		Theta = 0f;

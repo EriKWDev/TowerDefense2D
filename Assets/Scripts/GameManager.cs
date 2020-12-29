@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class GameManager : MonoBehaviour {
 
@@ -75,8 +74,6 @@ public class GameManager : MonoBehaviour {
 		if (lives > 0) {
 			lives -= 1;
 		}
-
-		livesText.GetComponent<TextMeshPro> ().text = "" + lives;
 
 		ParticleSystem.MainModule explosionParticleMain = endParticles.GetComponent<ParticleSystem> ().main;
 		explosionParticleMain.startColor = color;
